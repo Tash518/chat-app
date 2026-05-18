@@ -2,6 +2,8 @@ import React, { createContext, useReducer } from 'react'
 import { authReducer, initialState } from './authReducer';
 import { axiosInstance } from '../lib/axios';
 import toast from 'react-hot-toast';
+import { io } from 'socket.io-client';
+const BASE_URL = "http://localhost:5001";
 
 //creatin context
 const AuthContext = createContext();
@@ -21,6 +23,7 @@ const AuthProvider = ({ children }) => {
                 type: "CHECK_AUTH_SUCCESS",
                 payload: res.data,
             });
+            connectSocket(res.data);
 
         } catch (error) {
             console.log("Error in authcontext checkAuth:", { error });
@@ -44,6 +47,7 @@ const AuthProvider = ({ children }) => {
                 payload: res.data,
             })
             toast.success("account created successfully");
+            connectSocket(res.data);
         } catch (error) {
             console.log("Error in authcontext signup:", { error });
             toast.error("signup failed")
@@ -58,6 +62,7 @@ const AuthProvider = ({ children }) => {
             dispatch({ type: "LOGOUT" })
             console.log("Logout response:", res.data);
             toast.success("logged out successfully");
+            disconnectSocket();
         } catch (error) {
             console.log("Error in authcontext logout:", { error });
             toast.error("logout failed");
@@ -71,6 +76,8 @@ const AuthProvider = ({ children }) => {
             dispatch({ type: "LOGIN_SUCCESS", payload: res.data })
             toast.success("Login Successful")
             console.log("loggin response: ", res.data)
+            connectSocket(res.data);
+
         } catch (error) {
             console.log("Error in authcontext loggin:", { error });
             toast.error("loggin failed")
@@ -95,6 +102,34 @@ const AuthProvider = ({ children }) => {
             dispatch({ type: "UPDATE_FAILURE" });
         }
     }
+    const connectSocket = (userData) => {
+        try {
+            console.log("connect socket called")
+
+            if (!userData || state.socket?.connected) return;
+            const socket = io(BASE_URL);
+            socket.connect();
+            socket.on("connect", () => {
+                console.log("clint side socket id:", socket.id);
+ 
+            }
+            )
+            dispatch({ type: "SET_SOCKET_SUCCESS", payload: socket })
+        } catch (error) {
+            console.log("Error in authcontext connectSocket:", { error });
+
+        }
+    }
+    const disconnectSocket = () => {
+        try{
+            if(state.socket?.connected) state.socket.disconnect();
+            dispatch({ type: "RESET_SOCKET_SUCCESS", payload: null })
+            console.log("socket disconnected successfully")
+        }catch(error){
+            console.log("Error in authcontext disconnectSocket:", { error });
+        }
+    }
+
 
 
     const value = {
@@ -110,6 +145,7 @@ const AuthProvider = ({ children }) => {
             {children}
         </AuthContext.Provider>
     );
+
 
 
 };

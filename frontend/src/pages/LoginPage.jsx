@@ -48,7 +48,7 @@ const LoginPage = () => {
             className='input input-bordered w-full pl-10'
             onChange={(e) => {
               setFormData({...formData,email:e.target.value})
-              c
+              
             }
             }
              />

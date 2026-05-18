@@ -7,6 +7,7 @@ export const initialState = {
     isUpdatingProfile: false,
     onlineUsers: [],
     isCheckingAuth: true,
+    socket:null,
 };
 
 //reducer function
@@ -86,6 +87,17 @@ export const authReducer = (state, action) => {
             return {
                 ...state,
                 isUpdatingProfile: false,
+            }
+        //socket connection logic
+        case "SET_SOCKET_SUCCESS":
+            return{
+                ...state,
+                socket: action.payload,
+            }
+        case "RESET_SOCKET_SUCCESS":
+            return{
+                ...state,
+                socket:null,
             }
         default:
             return state;
