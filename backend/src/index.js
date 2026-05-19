@@ -37,13 +37,25 @@ app.use("/api/auth", authRoutes);
 app.use("/api/messages", messageRoutes);
 
 //socket events
-io.on("connection", (socket) => {
-  console.log("server side user connected on ", socket.id);
+const socketUserMap = {}; //online users chec
 
-  socket.on("disconnect", () => {
-    console.log("a user disconnected ", socket.id)
-  }
-  )
+io.on("connection", (socket) => {
+    console.log("server side user connected on ", socket.id);
+    const userId = socket.handshake.query.userId;
+    if(userId){
+        console.log("mapping socket id with user id: ", {userId, socketId: socket.id})
+        socketUserMap[userId] = socket.id;
+        console.log("current user socket map: ", socketUserMap)
+        //emit user keys that are online to all clients
+        io.emit("getOnlineUsers", Object.keys(socketUserMap));
+    }
+    socket.on("disconnect", () => {
+        console.log("a user disconnected ", socket.id);
+        delete socketUserMap[userId];
+        console.log("on disconnect current user socket map: ", socketUserMap)
+        io.emit("getOnlineUsers", Object.keys(socketUserMap));
+    }
+    )
 }
 )
 //database+server starting

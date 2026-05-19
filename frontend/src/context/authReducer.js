@@ -99,6 +99,11 @@ export const authReducer = (state, action) => {
                 ...state,
                 socket:null,
             }
+        case "GET_ONLINE_USERS":
+            return{
+                ...state,
+                onlineUsers: action.payload,
+            }
         default:
             return state;
     }

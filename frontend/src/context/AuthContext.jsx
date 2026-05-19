@@ -107,7 +107,11 @@ const AuthProvider = ({ children }) => {
             console.log("connect socket called")
 
             if (!userData || state.socket?.connected) return;
-            const socket = io(BASE_URL);
+            const socket = io(BASE_URL, {
+                query:{
+                    userId: userData._id,
+                }
+            });
             socket.connect();
             socket.on("connect", () => {
                 console.log("clint side socket id:", socket.id);
@@ -115,6 +119,12 @@ const AuthProvider = ({ children }) => {
             }
             )
             dispatch({ type: "SET_SOCKET_SUCCESS", payload: socket })
+            //gettoin online user
+            socket.on("getOnlineUsers" ,(socketUserMap) => {
+                dispatch({type:"GET_ONLINE_USERS", payload:socketUserMap})
+                console.log("successful online users gotten: ",socketUserMap);
+            }
+            )
         } catch (error) {
             console.log("Error in authcontext connectSocket:", { error });
 

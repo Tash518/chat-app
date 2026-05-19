@@ -8,7 +8,8 @@ const ChatContainer = () => {
   const { messages, getMessages, isMessagesLoading, selectedUser } = useContext(ChatContext);
   const { authUser } = useContext(AuthContext)
   useEffect(() => {
-    getMessages(selectedUser._id)
+    getMessages(selectedUser._id);
+    
   }, [selectedUser._id, getMessages])
   if (isMessagesLoading) return <div className='flex w-full flex-col overflow-auto'>
     <ChatHeader />
