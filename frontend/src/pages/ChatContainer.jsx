@@ -5,12 +5,19 @@ import InputMessage from '../components/InputMessage';
 import { AuthContext } from '../context/AuthContext';
 
 const ChatContainer = () => {
-  const { messages, getMessages, isMessagesLoading, selectedUser } = useContext(ChatContext);
-  const { authUser } = useContext(AuthContext)
+  const { messages, getMessages, isMessagesLoading, selectedUser, receiveMessage } = useContext(ChatContext);
+  const { socket,authUser } = useContext(AuthContext)
   useEffect(() => {
+    if(!socket || !selectedUser) return;
     getMessages(selectedUser._id);
-    
-  }, [selectedUser._id, getMessages])
+    //listen for messaes usin sockets
+    socket.on("newMessage", (message) => {
+      receiveMessage(message, authUser, selectedUser);
+    });
+    return ()=>{
+      socket.off("newMessage");
+    }
+  }, [selectedUser._id, getMessages, socket, receiveMessage])
   if (isMessagesLoading) return <div className='flex w-full flex-col overflow-auto'>
     <ChatHeader />
     {/* make skeleton */}

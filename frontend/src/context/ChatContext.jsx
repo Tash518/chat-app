@@ -22,7 +22,7 @@ const ChatProvider = ({ children }) => {
         }
 
     }, [])
-    
+
 
     const getMessages = useCallback(async (userId) => {
         dispatch({ type: "GET_MESSAGES_START" });
@@ -65,6 +65,12 @@ const ChatProvider = ({ children }) => {
         }
     }
 
+    const receiveMessage = useCallback((message, authUser, selectedUser) => {
+        if((message.senderId==authUser._id && message.receiverId==selectedUser._id)||message.senderId==selectedUser._id && message.receiverId==authUser._id)
+        dispatch({ type: "RECEIVE_MESSAGE", payload: message })
+    }, [])
+
+
 
     const value = {
         ...state,
@@ -72,6 +78,7 @@ const ChatProvider = ({ children }) => {
         getMessages,
         setSelectedUser,
         sendMessage,
+        receiveMessage,
     }
     return <ChatContext.Provider value={value}>
         {children}

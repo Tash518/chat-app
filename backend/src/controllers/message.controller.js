@@ -1,3 +1,4 @@
+import { getReveiverSocketId, io } from "../index.js";
 import cloudinary from "../lib/cloudinary.js";
 import Message from "../models/message.model.js";
 import User from "../models/user.model.js";
@@ -47,6 +48,11 @@ export const sendMessage = async (req,res) => {
             image:imageurl,
         })
         await newMessage.save();
+        //realtime functionality
+        const revieverSocketId = getReveiverSocketId(receiverId);
+        if(revieverSocketId){
+            io.to(revieverSocketId).emit("newMessage", newMessage);
+        }
         //realtime functionality oes here 
         res.status(201).json(newMessage);
 

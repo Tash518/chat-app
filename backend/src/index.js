@@ -20,7 +20,7 @@ const io = new Server(server, {
         credentials: true,
     }
 });
-
+export { io };
 
 //lobal middleare
 app.use(cors({
@@ -56,8 +56,14 @@ io.on("connection", (socket) => {
         io.emit("getOnlineUsers", Object.keys(socketUserMap));
     }
     )
+
 }
 )
+//to return selectedUSer socketId
+export function getReveiverSocketId(revieverId){
+  return socketUserMap[revieverId];
+}
+
 //database+server starting
 const PORT = process.env.PORT;
 server.listen(PORT, () => {

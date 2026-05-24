@@ -10,14 +10,12 @@ const Sidebar = () => {
   useEffect(() => {
     getUsers();
   }, [getUsers])
-  let temponlineusers = [
-    { _id: 1, fullName: "John" },
-    { _id: 2, fullName: "Alice" }
-  ]
+
   //debug useeffect
   useEffect(() => {
     console.log("UPDATED selectedUser:", selectedUser);
-  }, [selectedUser]);
+    console.log("UPDATED onlineUsers:", onlineUsers);
+  }, [selectedUser, onlineUsers]);
   if (isUsersLoading) return <SidebarSkeleton />
   return (
     <aside className='w-20 lg:w-72 border-blue-950 border-r-4 flex flex-col h-full transition-all duration-200'>
@@ -46,7 +44,7 @@ const Sidebar = () => {
                 <img src={user.profilePic || "/avatar.webp"} alt={user.fullName}
                   className='size-12 rounded-full object-fill' />
 
-                {temponlineusers.includes(user._id) && (
+                {onlineUsers.includes(user._id) && (
                   <>
                     <span className='absolute bottom-0 right-0 size-3 bg-green-300 rounded-full ring-2 ring-gray-800'></span>
                   </>
@@ -55,7 +53,7 @@ const Sidebar = () => {
               {/* user info section fro big screens */}
               <div className="hidden lg:block text-left min-w-0">
                 <div className='font-medium text-gray-200'>{user.fullName}</div>
-                <div className="text-sm text-gray-400">        {temponlineusers.includes(user._id) ? "Online" : "Offline"}
+                <div className="text-sm text-gray-400">        {onlineUsers.includes(user._id) ? "Online" : "Offline"}
                 </div>
               </div>
             </button>

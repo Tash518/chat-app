@@ -62,6 +62,12 @@ export const chatReducer = (state, action) => {
             }
         case "SEND_MESSAGE_FAILURE":
             return state;
+        //revievemessae using sockets logic
+        case "RECEIVE_MESSAGE":
+            return{
+                ...state,
+                messages:[...state.messages,action.payload]
+            }
 
         default:
             return state;
