@@ -3,18 +3,27 @@ import { ChatContext } from '../context/ChatContext'
 import ChatHeader from '../components/ChatHeader';
 import InputMessage from '../components/InputMessage';
 import { AuthContext } from '../context/AuthContext';
+import { useRef } from 'react';
 
 const ChatContainer = () => {
   const { messages, getMessages, isMessagesLoading, selectedUser, receiveMessage } = useContext(ChatContext);
-  const { socket,authUser } = useContext(AuthContext)
+  const { socket, authUser } = useContext(AuthContext)
+  const bottomRef = useRef(null);
+  //autoscroll on new message useeffect
   useEffect(() => {
-    if(!socket || !selectedUser) return;
+    bottomRef.current?.scrollIntoView({ behavior: "smooth" });
+
+  }, [messages])
+
+  //use effect to get messages when selected user changes and also listen for new messages using sockets  
+  useEffect(() => {
+    if (!socket || !selectedUser) return;
     getMessages(selectedUser._id);
     //listen for messaes usin sockets
     socket.on("newMessage", (message) => {
       receiveMessage(message, authUser, selectedUser);
     });
-    return ()=>{
+    return () => {
       socket.off("newMessage");
     }
   }, [selectedUser._id, getMessages, socket, receiveMessage])
@@ -65,6 +74,7 @@ const ChatContainer = () => {
           </>
         }
         )}
+        <div ref={bottomRef}></div>
       </div>
       <InputMessage />
     </div>
