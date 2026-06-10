@@ -1,10 +1,11 @@
-import React, { useContext, useEffect } from 'react'
+import React, { useContext, useEffect, useState } from 'react'
 import { ChatContext } from '../context/ChatContext'
 import SidebarSkeleton from '../components/skeletons/SidebarSkeleton'
 import { Users } from 'lucide-react'
 import { AuthContext } from '../context/AuthContext'
 const Sidebar = () => {
   const { selectedUser, setSelectedUser, users, getUsers, isUsersLoading } = useContext(ChatContext);
+  const [showOnlineUsers, setShowOnlineUsers] = useState(false);
 
   const { onlineUsers } = useContext(AuthContext);
   useEffect(() => {
@@ -15,21 +16,38 @@ const Sidebar = () => {
   useEffect(() => {
     console.log("UPDATED selectedUser:", selectedUser);
     console.log("UPDATED onlineUsers:", onlineUsers);
-  }, [selectedUser, onlineUsers]);
+    console.log("filteredUsers:", showOnlineUsers ? users.filter(user => onlineUsers.includes(user._id)) : users);
+    
+  }, [selectedUser, onlineUsers, showOnlineUsers]);
+  //filter users if online
+  const filteredUsers  = showOnlineUsers ?  users.filter(user => onlineUsers.includes(user._id)) : users;
   if (isUsersLoading) return <SidebarSkeleton />
   return (
     <aside className='w-20 lg:w-72 border-blue-950 border-r-4 flex flex-col h-full transition-all duration-200'>
       {/* header */}
-      <div className="border-b border-blue-950 w-full p-4">
+      <div className="border-b border-blue-950 w-full flex justify-between p-4">
         <div className="flex items-center gap-3">
           <Users className='size-6' />
           <span className='font-medium hidden lg:block'>People</span>
         </div>
+        <label className="flex items-center gap-2 cursor-pointer">
+          <input type="checkbox"
+          checked={showOnlineUsers}
+          onChange={(e) => {
+            setShowOnlineUsers(e.target.checked)
+          }
+          }
+          className='hidden' />
+          <div className="size-5 rounded-full flex justify-center items-center bg-gray-200 border-gray-800 border-2">
+            {showOnlineUsers && (<div className="size-3 bg-green-300 rounded-full ring-2"></div>)}
+          </div>
+        </label>
+        <div className='text-sm text-gray-400'>Online: {onlineUsers.length-1}</div>
       </div>
       {/* map users */}
 
       <div className="overflow-y-auto w-full py-4">
-        {users.map((user) => {
+        {filteredUsers.map((user) => {
           return <>
             <button
               key={user._id}
