@@ -16,7 +16,7 @@ const server = http.createServer(app);
 //socketio setup
 const io = new Server(server, {
     cors: {
-        origin: ["http://localhost:5173"],
+        origin: ["https://chat-app-frontend-78wo.onrender.com"],
         credentials: true,
     }
 });
@@ -24,7 +24,7 @@ export { io };
 
 //lobal middleare
 app.use(cors({
-    origin: "http://localhost:5173",
+    origin: "https://chat-app-frontend-78wo.onrender.com",
     credentials: true,
 }
 ))
