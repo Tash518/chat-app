@@ -72,6 +72,7 @@ const AuthProvider = ({ children }) => {
     const login = async (data) => {
         dispatch({ type: "LOGIN_START" })
         try {
+            // console.log("login data from authcontext:", data)
             const res = await axiosInstance.post("/auth/login", data);
             dispatch({ type: "LOGIN_SUCCESS", payload: res.data })
             toast.success("Login Successful")

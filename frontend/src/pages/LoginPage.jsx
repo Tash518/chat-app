@@ -27,7 +27,7 @@ const LoginPage = () => {
               <MessageSquare className=' size-6 text-primary/60 ' />
             </div>
               <div className="text-2xl font-bold">Welcome Back</div>
-              <p className="text-base-content">Sign in to continue</p>
+              <p className="text-base-content">Login in to continue</p>
           </div>
         </div>
         {/* form */}
@@ -75,7 +75,7 @@ const LoginPage = () => {
           </div>
           {/* submit */}
             <button type='submit' className=' w-full size-6 btn btn-primary bg-primary' disabled={isLoggingin} >
-              {isLoggingin ? (<> <Loader className='size-5 animate-spin' /> LOADIN...</>) : ("Create Account")}
+              {isLoggingin ? (<> <Loader className='size-5 animate-spin' /> LOADIN...</>) : ("LOGIN")}
             </button>
         </form>
         {/* login link */}
